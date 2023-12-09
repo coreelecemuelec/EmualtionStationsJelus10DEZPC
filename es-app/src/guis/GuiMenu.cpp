@@ -111,7 +111,7 @@ std::string GetEnv( const std::string & var ) {
      }
 }
 
-GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(window, _("MENU LZ-OS V7").c_str()), mVersion(window)
+GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(window, _("LZ-RETRO-STATION V-8.1").c_str()), mVersion(window)
 {
 	// MAIN MENU
 	bool isFullUI = UIModeController::getInstance()->isUIModeFull();
@@ -145,8 +145,8 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 	if (isFullUI)
 	{
 #if !defined(WIN32) || defined(_DEBUG)
-		addEntry(_("CONFIGURAR SISTEMA LZ-OS").c_str(), true, [this] { openGamesSettings_batocera(); }, "iconGames");
-		addEntry(_("CONFIGURAR MENU DE JOGOS").c_str(), true, [this] { openCollectionSystemSettings(); }, "iconAdvanced");
+		addEntry(_("CONFIGURE O LZ-OS").c_str(), true, [this] { openGamesSettings_batocera(); }, "iconGames");
+		addEntry(_("CONFIGURAR OS JOGOS").c_str(), true, [this] { openCollectionSystemSettings(); }, "iconAdvanced");
 
 		if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::RETROACHIVEMENTS) &&
 			SystemConf::getInstance()->getBool("global.retroachievements") &&
@@ -155,15 +155,15 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 			addEntry(_("RETROACHIEVEMENTS").c_str(), true, [this] { GuiRetroAchievements::show(mWindow); }, "iconRetroachievements");
 
 #ifdef _ENABLEEMUELEC
-		addEntry(_("CONFIGURAR DADOS SISTEMA").c_str(), true, [this] { openSystemSettings_batocera(); }, "iconSystem");
+		addEntry(_("CONFIGURAR OS DADOS DO SISTEMA").c_str(), true, [this] { openSystemSettings_batocera(); }, "iconSystem");
 		//addEntry(_("EMULATIONSTATION SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec");
 #endif
-		addEntry(_("CONFIGURAR UI").c_str(), true, [this] { openUISettings(); }, "iconUI");
+		addEntry(_("CONFIGURAR O FRONT END").c_str(), true, [this] { openUISettings(); }, "iconUI");
 		addEntry(controllers_settings_label.c_str(), true, [this] { openControllersSettings_batocera(); }, "iconControllers");
 		addEntry(_("CONFIGURAR AUDIO").c_str(), true, [this] { openSoundSettings(); }, "iconSound");
 
 		if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::WIFI)) {
-			addEntry(_("CONFIGURAR REDE").c_str(), true, [this] { openNetworkSettings_batocera(); }, "iconNetwork");
+			addEntry(_("CONFIGURE A REDE").c_str(), true, [this] { openNetworkSettings_batocera(); }, "iconNetwork");
 #if defined(AMD64) || defined(RK3326) || defined(RK3566) || defined(RK3566_X55) || defined(RK3588) || defined(RK3399)
 		  addEntry(_("MOONLIGHT GAME STREAMING").c_str(), true, [this] { GuiMoonlight::show(mWindow); }, "iconGames");
 #endif
@@ -4597,7 +4597,7 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 	}
 #endif
 
-	auto s = new GuiSettings(window, (quickAccessMenu ? _("SAIR E DESLIGAR") : _("SAIR")).c_str());
+	auto s = new GuiSettings(window, (quickAccessMenu ? _("SAIR E DESLIGAR LZ-RETRO-STATION") : _("SAIR")).c_str());
 	s->setCloseButton("select");
 
 	if (quickAccessMenu)
@@ -4610,7 +4610,7 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 			auto sname = AudioManager::getInstance()->getSongName();
 			if (!sname.empty())
 			{
-				s->addWithDescription(_("SKIP TO NEXT SONG"), _("LISTENING NOW") + " : " + sname, nullptr, [s, window]
+				s->addWithDescription(_("PULE PARA OUTRA MUSICA"), _("LISTAR AGORA") + " : " + sname, nullptr, [s, window]
 				{
 					Window* w = window;
 					AudioManager::getInstance()->playRandomMusic(false);
@@ -4656,8 +4656,8 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 		s->addGroup(_("SAIR"));
 
 #ifdef _ENABLEEMUELEC
-	s->addEntry(_("RESETAR EMULATIONSTATION"), false, [window] {
-		window->pushGui(new GuiMsgBox(window, _("REALLY RESTART EMULATIONSTATION?"), _("YES"),
+	s->addEntry(_("RESETAR LZ-RETRO-STATION"), false, [window] {
+		window->pushGui(new GuiMsgBox(window, _("POSSO RESETAR O LZ-RETRO-STATION?"), _("YES"),
 			[] {
     		   /*runSystemCommand("systemctl restart emustation.service", "", nullptr);*/
     		   Scripting::fireEvent("quit", "restart");
@@ -4691,15 +4691,15 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 
 #endif
 
-	s->addEntry(_("RESTART LZ-OS"), false, [window] {
-		window->pushGui(new GuiMsgBox(window, _("REALLY RESTART?"),
+	s->addEntry(_("RESTART LZ-RETRO-STATION"), false, [window] {
+		window->pushGui(new GuiMsgBox(window, _("VAMOS RESETAR LZ-RETRO-STATION?"),
 			_("YES"), [] { quitES(QuitMode::REBOOT); },
 			_("NO"), nullptr));
 	}, "iconRestart");
 
 
-	s->addEntry(_("DESLIGAR LZ-OS"), false, [window] {
-		window->pushGui(new GuiMsgBox(window, _("REALLY SHUTDOWN?"),
+	s->addEntry(_("DESLIGAR LZ-RETRO-STATION"), false, [window] {
+		window->pushGui(new GuiMsgBox(window, _("VAMOS DESLIGAR LZ-RETRO-STATION?"),
 			_("YES"), [] { quitES(QuitMode::SHUTDOWN); },
 			_("NO"), nullptr));
 	}, "iconShutdown");
@@ -4715,8 +4715,8 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 #ifdef WIN32
 	if (Settings::getInstance()->getBool("ShowExit"))
 	{
-		s->addEntry(_("SAIR EMULATIONSTATION"), false, [window] {
-			window->pushGui(new GuiMsgBox(window, _("REALLY QUIT?"),
+		s->addEntry(_("SAIR LZ-RETRO-STATION"), false, [window] {
+			window->pushGui(new GuiMsgBox(window, _("VAMOS SAIR DO LZ-RETRO-STATION?"),
 				_("YES"), [] { quitES(QuitMode::QUIT); },
 				_("NO"), nullptr));
 		}, "iconQuit");
