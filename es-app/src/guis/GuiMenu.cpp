@@ -209,7 +209,7 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 			addEntry(_("RETROACHIEVEMENTS").c_str(), true, [this] { GuiRetroAchievements::show(mWindow); }, "iconRetroachievements");
 
 		addEntry(_("DADOS DO SISTEMA LZ-OS").c_str(), true, [this] { openSystemInformations_batocera(); }, "iconSystem");
-		addEntry(_("UNLOCK UI MODE").c_str(), true, [this] { exitKidMode(); }, "iconAdvanced");
+		addEntry(_("MENU PARA ADMINISTRADOR DO SISTEMA").c_str(), true, [this] { exitKidMode(); }, "iconAdvanced");
 	}
 
 #ifdef WIN32
@@ -2865,11 +2865,11 @@ void GuiMenu::openControllersSettings_batocera(int autoSel)
 	s->addEntry(_("MAPEAR CONTROLE"), false, [window, this, s]
 	{
 		window->pushGui(new GuiMsgBox(window,
-			_("YOU ARE GOING TO MAP A CONTROLLER. MAP BASED ON THE BUTTON'S POSITION "
-				"RELATIVE TO ITS EQUIVALENT ON A SNES CONTROLLER, NOT ITS PHYSICAL LABEL. "
-				"IF YOU DO NOT HAVE A SPECIAL KEY FOR HOTKEY, USE THE SELECT BUTTON. SKIP "
-				"ALL BUTTONS/STICKS YOU DO NOT HAVE BY HOLDING ANY KEY. PRESS THE "
-				"SOUTH BUTTON TO CONFIRM WHEN DONE."), _("OK"),
+			_("VOCÊ VAI MAPEAR UM CONTROLADOR. MAPA COM BASE NA POSIÇÃO DO BOTÃO"
+"RELACIONADO AO SEU EQUIVALENTE EM UM CONTROLADOR SNES, NÃO À SUA ETIQUETA FÍSICA."
+"SE VOCÊ NÃO TIVER UMA TECLA ESPECIAL PARA HOTKEY, USE O BOTÃO SELECIONAR. PULAR "
+"TODOS OS BOTÕES/PASTILHAS QUE VOCÊ NÃO TEM MANTENDO QUALQUER TECLA. PRESSIONE O"
+"BOTÃO SUL PARA CONFIRMAR QUANDO CONCLUÍDO."), _("OK"),
 			[window, this, s] {
 			window->pushGui(new GuiDetectDevice(window, false, [this, s] {
 				s->setSave(false);
@@ -2917,7 +2917,7 @@ void GuiMenu::openControllersSettings_batocera(int autoSel)
 		});
 
 		// PAIR A BLUETOOTH CONTROLLER OR BT AUDIO DEVICE
-		s->addEntry(_("PAIR A BLUETOOTH DEVICE"), false, [window, bluetoothd_enabled] {
+		s->addEntry(_("CONECTAR UM CONTROLE BLUETOOTH"), false, [window, bluetoothd_enabled] {
 			if (bluetoothd_enabled->getState() == false) {
 				window->pushGui(new GuiMsgBox(window, _("BLUETOOTH IS DISABLED")));
 			} else {
