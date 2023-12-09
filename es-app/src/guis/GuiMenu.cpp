@@ -4598,7 +4598,7 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 	}
 #endif
 
-	auto s = new GuiSettings(window, (quickAccessMenu ? _("SAIR E DESLIGAR LZ-RETRO-STATION") : _("SAIR")).c_str());
+	auto s = new GuiSettings(window, (quickAccessMenu ? _("SAIR E DESLIGAR LZ RETRO STATION") : _("SAIR")).c_str());
 	s->setCloseButton("select");
 
 	if (quickAccessMenu)
@@ -4657,7 +4657,7 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 		s->addGroup(_("SAIR"));
 
 #ifdef _ENABLEEMUELEC
-	s->addEntry(_("RESETAR LZ-RETRO-STATION"), false, [window] {
+	s->addEntry(_("RESETAR LZ RETRO STATION"), false, [window] {
 		window->pushGui(new GuiMsgBox(window, _("POSSO RESETAR O LZ-RETRO-STATION?"), _("YES"),
 			[] {
     		   /*runSystemCommand("systemctl restart emustation.service", "", nullptr);*/
@@ -4692,14 +4692,14 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 
 #endif
 
-	s->addEntry(_("RESTART LZ-RETRO-STATION"), false, [window] {
+	s->addEntry(_("RESTART LZ RETRO STATION"), false, [window] {
 		window->pushGui(new GuiMsgBox(window, _("VAMOS RESETAR LZ-RETRO-STATION?"),
 			_("YES"), [] { quitES(QuitMode::REBOOT); },
 			_("NO"), nullptr));
 	}, "iconRestart");
 
 
-	s->addEntry(_("DESLIGAR LZ-RETRO-STATION"), false, [window] {
+	s->addEntry(_("DESLIGAR LZ RETRO STATION"), false, [window] {
 		window->pushGui(new GuiMsgBox(window, _("VAMOS DESLIGAR LZ-RETRO-STATION?"),
 			_("YES"), [] { quitES(QuitMode::SHUTDOWN); },
 			_("NO"), nullptr));
@@ -4716,7 +4716,7 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 #ifdef WIN32
 	if (Settings::getInstance()->getBool("ShowExit"))
 	{
-		s->addEntry(_("SAIR LZ-RETRO-STATION"), false, [window] {
+		s->addEntry(_("SAIR LZ RETRO STATION"), false, [window] {
 			window->pushGui(new GuiMsgBox(window, _("VAMOS SAIR DO LZ-RETRO-STATION?"),
 				_("YES"), [] { quitES(QuitMode::QUIT); },
 				_("NO"), nullptr));
