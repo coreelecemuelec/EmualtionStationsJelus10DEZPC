@@ -210,6 +210,7 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 
 		addEntry(_("DADOS DO SISTEMA LZ-OS").c_str(), true, [this] { openSystemInformations_batocera(); }, "iconSystem");
 		addEntry(_("MENU PARA ADMINISTRADOR DO SISTEMA").c_str(), true, [this] { exitKidMode(); }, "iconAdvanced");
+		
 	}
 
 #ifdef WIN32
@@ -254,7 +255,7 @@ void GuiMenu::openEmuELECSettings()
         auto bluetoothd_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool btbaseEnabled = SystemConf::getInstance()->get("bluetooth.enabled") == "1";
 		bluetoothd_enabled->setState(btbaseEnabled);
-		s->addWithLabel(_("ENABLE BLUETOOTH"), bluetoothd_enabled);
+		s->addWithLabel(_("LIGAR BLUETOOTH"), bluetoothd_enabled);
 		s->addSaveFunc([bluetoothd_enabled] {
 			if (bluetoothd_enabled->changed()) {
 			if (bluetoothd_enabled->getState() == false) {
@@ -280,7 +281,7 @@ void GuiMenu::openEmuELECSettings()
        auto sshd_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool baseEnabled = SystemConf::getInstance()->get("ssh.enabled") == "1";
 		sshd_enabled->setState(baseEnabled);
-		s->addWithLabel(_("ENABLE SSH"), sshd_enabled);
+		s->addWithLabel(_("LIGAR SSH"), sshd_enabled);
 		s->addSaveFunc([sshd_enabled] {
 			if (sshd_enabled->changed()) {
 			if (sshd_enabled->getState() == false) {
@@ -315,7 +316,7 @@ void GuiMenu::openEmuELECSettings()
        auto fps_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool fpsEnabled = SystemConf::getInstance()->get("global.showFPS") == "1";
 		fps_enabled->setState(fpsEnabled);
-		s->addWithLabel(_("SHOW RETROARCH FPS"), fps_enabled);
+		s->addWithLabel(_("MOSTRAR RETROARCH FPS"), fps_enabled);
 		s->addSaveFunc([fps_enabled] {
 			bool fpsenabled = fps_enabled->getState();
                 SystemConf::getInstance()->set("global.showFPS", fpsenabled ? "1" : "0");
@@ -335,7 +336,7 @@ void GuiMenu::openEmuELECSettings()
        auto splash_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool splashEnabled = SystemConf::getInstance()->get("splash.enabled") == "1";
 		splash_enabled->setState(splashEnabled);
-		s->addWithLabel(_("ENABLE RA SPLASH"), splash_enabled);
+		s->addWithLabel(_("LIGAR RA SPLASH"), splash_enabled);
 		s->addSaveFunc([splash_enabled] {
                 bool splashenabled = splash_enabled->getState();
                 SystemConf::getInstance()->set("splash.enabled", splashenabled ? "1" : "0");
@@ -345,7 +346,7 @@ void GuiMenu::openEmuELECSettings()
 	auto enable_bootvideo = std::make_shared<SwitchComponent>(mWindow);
 	bool bootEnabled = SystemConf::getInstance()->get("bootvideo.enabled") == "1";
 	enable_bootvideo->setState(bootEnabled);
-	s->addWithLabel(_("ALWAYS SHOW BOOT VIDEO"), enable_bootvideo);
+	s->addWithLabel(_("SEMPRE MOSTRAR BOOT VIDEO"), enable_bootvideo);
 
 	s->addSaveFunc([enable_bootvideo, window] {
 		bool bootvideoenabled = enable_bootvideo->getState();
@@ -2865,11 +2866,11 @@ void GuiMenu::openControllersSettings_batocera(int autoSel)
 	s->addEntry(_("MAPEAR CONTROLE"), false, [window, this, s]
 	{
 		window->pushGui(new GuiMsgBox(window,
-			_("VOCÊ VAI MAPEAR UM CONTROLADOR. MAPA COM BASE NA POSIÇÃO DO BOTÃO"
-"RELACIONADO AO SEU EQUIVALENTE EM UM CONTROLADOR SNES, NÃO À SUA ETIQUETA FÍSICA."
-"SE VOCÊ NÃO TIVER UMA TECLA ESPECIAL PARA HOTKEY, USE O BOTÃO SELECIONAR. PULAR "
-"TODOS OS BOTÕES/PASTILHAS QUE VOCÊ NÃO TEM MANTENDO QUALQUER TECLA. PRESSIONE O"
-"BOTÃO SUL PARA CONFIRMAR QUANDO CONCLUÍDO."), _("OK"),
+			_("PARA MAPEAR UM CONTROLADOR. MAPA COM BASE NA LOCAL DO BOTAO"
+"RELACIONADO AO SEU EQUIVALENTE EM UM CONTROLADOR SNES, NAO À SUA ETIQUETA FISICA."
+"SE NÃO TIVER UMA TECLA ESPECIAL PARA HOTKEY, USE O BOTAO SELECIONAR. PULAR "
+"TODOS OS BOTÕES/PASTILHAS QUE NÃO TEM MANTENDO QUALQUER TECLA. PRESSIONE O"
+"BOTAO SUL PARA CONFIRMAR QUANDO CONCLUIDO."), _("OK"),
 			[window, this, s] {
 			window->pushGui(new GuiDetectDevice(window, false, [this, s] {
 				s->setSave(false);
