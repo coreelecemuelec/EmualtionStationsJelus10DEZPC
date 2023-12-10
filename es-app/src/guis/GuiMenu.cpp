@@ -210,7 +210,6 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 
 		addEntry(_("DADOS DO SISTEMA LZ-OS").c_str(), true, [this] { openSystemInformations_batocera(); }, "iconSystem");
 		addEntry(_("AREA PARA ADIMINISTRADOR DO SISTEMA").c_str(), true, [this] { exitKidMode(); }, "iconAdvanced");
-		addEntry(_("CONFIGURAR CONTROLES"), true, [this] { openConfigInput(); }, "iconControllers");
 	}
 
 #ifdef WIN32
