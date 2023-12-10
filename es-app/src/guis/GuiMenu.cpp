@@ -170,9 +170,9 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 		}
 #else
 		if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::GAMESETTINGS))
-			addEntry(_("CONFIGURE LZ-OS SYSTEM").c_str(), true, [this] { openGamesSettings_batocera(); }, "iconGames");
+			addEntry(_("CONFIGURE LZ-RETRO-STATION").c_str(), true, [this] { openGamesSettings_batocera(); }, "iconGames");
 
-		addEntry(_("CONFIGURAR UI").c_str(), true, [this] { openUISettings(); }, "iconUI");
+		addEntry(_("CONFIGURAR O FONRT END").c_str(), true, [this] { openUISettings(); }, "iconUI");
 
 		if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::GAMESETTINGS))
 			addEntry(controllers_settings_label.c_str(), true, [this] { openControllersSettings_batocera(); }, "iconControllers");
@@ -208,8 +208,10 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 			SystemConf::getInstance()->get("global.retroachievements.username") != "")
 			addEntry(_("RETROACHIEVEMENTS").c_str(), true, [this] { GuiRetroAchievements::show(mWindow); }, "iconRetroachievements");
 
-		addEntry(_("DADOS DO SISTEMA LZ-OS").c_str(), true, [this] { openSystemInformations_batocera(); }, "iconSystem");
+		addEntry(_("DADOS DO LZ-RETRO-STATION").c_str(), true, [this] { openSystemInformations_batocera(); }, "iconSystem");
 		addEntry(_("AREA PARA ADIMINISTRADOR DO SISTEMA").c_str(), true, [this] { exitKidMode(); }, "iconAdvanced");
+		addEntry(_("CONFIGURAR CONTROLES"), true, [this] { openConfigInput(); }, "iconControllers");
+
 	}
 
 #ifdef WIN32
