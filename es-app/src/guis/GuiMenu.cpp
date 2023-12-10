@@ -111,7 +111,7 @@ std::string GetEnv( const std::string & var ) {
      }
 }
 
-GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(window, _("MENU LZ-OS V7").c_str()), mVersion(window)
+GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(window, _("LZ-RETRO-STATION").c_str()), mVersion(window)
 {
 	// MAIN MENU
 	bool isFullUI = UIModeController::getInstance()->isUIModeFull();
@@ -145,7 +145,7 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 	if (isFullUI)
 	{
 #if !defined(WIN32) || defined(_DEBUG)
-		addEntry(_("CONFIGURAR SISTEMA LZ-OS").c_str(), true, [this] { openGamesSettings_batocera(); }, "iconGames");
+		addEntry(_("CONFIGURE O LZ-RETRO-STATION").c_str(), true, [this] { openGamesSettings_batocera(); }, "iconGames");
 		addEntry(_("CONFIGURAR MENU DE JOGOS").c_str(), true, [this] { openCollectionSystemSettings(); }, "iconAdvanced");
 
 		if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::RETROACHIVEMENTS) &&
@@ -2865,11 +2865,11 @@ void GuiMenu::openControllersSettings_batocera(int autoSel)
 	s->addEntry(_("MAPEAR CONTROLE"), false, [window, this, s]
 	{
 		window->pushGui(new GuiMsgBox(window,
-			_("YOU ARE GOING TO MAP A CONTROLLER. MAP BASED ON THE BUTTON'S POSITION "
-				"RELATIVE TO ITS EQUIVALENT ON A SNES CONTROLLER, NOT ITS PHYSICAL LABEL. "
-				"IF YOU DO NOT HAVE A SPECIAL KEY FOR HOTKEY, USE THE SELECT BUTTON. SKIP "
-				"ALL BUTTONS/STICKS YOU DO NOT HAVE BY HOLDING ANY KEY. PRESS THE "
-				"SOUTH BUTTON TO CONFIRM WHEN DONE."), _("OK"),
+			_("PARA MAPEAR UM CONTROLADOR. MAPA COM BASE NA LOCAL DO BOTAO"
+"RELACIONADO AO SEU EQUIVALENTE EM UM CONTROLADOR SNES, NAO À SUA ETIQUETA FISICA."
+"SE NÃO TIVER UMA TECLA ESPECIAL PARA HOTKEY, USE O BOTAO SELECIONAR. PULAR "
+"TODOS OS BOTÕES/PASTILHAS QUE NÃO TEM MANTENDO QUALQUER TECLA. PRESSIONE O"
+"BOTAO SUL PARA CONFIRMAR QUANDO CONCLUIDO."), _("OK"),
 			[window, this, s] {
 			window->pushGui(new GuiDetectDevice(window, false, [this, s] {
 				s->setSave(false);
