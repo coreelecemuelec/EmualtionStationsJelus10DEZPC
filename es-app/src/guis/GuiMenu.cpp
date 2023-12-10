@@ -146,7 +146,7 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 	{
 #if !defined(WIN32) || defined(_DEBUG)
 		addEntry(_("CONFIGURE O LZ-RETRO-STATION").c_str(), true, [this] { openGamesSettings_batocera(); }, "iconGames");
-		addEntry(_("CONFIGURAR MENU DE JOGOS").c_str(), true, [this] { openCollectionSystemSettings(); }, "iconAdvanced");
+		addEntry(_("CONFIGURAR O MENU DE JOGOS").c_str(), true, [this] { openCollectionSystemSettings(); }, "iconAdvanced");
 
 		if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::RETROACHIVEMENTS) &&
 			SystemConf::getInstance()->getBool("global.retroachievements") &&
@@ -155,15 +155,15 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 			addEntry(_("RETROACHIEVEMENTS").c_str(), true, [this] { GuiRetroAchievements::show(mWindow); }, "iconRetroachievements");
 
 #ifdef _ENABLEEMUELEC
-		addEntry(_("CONFIGURAR DADOS SISTEMA").c_str(), true, [this] { openSystemSettings_batocera(); }, "iconSystem");
+		addEntry(_("CONFIGURE OS DADOS DE SISTEMA").c_str(), true, [this] { openSystemSettings_batocera(); }, "iconSystem");
 		//addEntry(_("EMULATIONSTATION SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec");
 #endif
-		addEntry(_("CONFIGURAR UI").c_str(), true, [this] { openUISettings(); }, "iconUI");
+		addEntry(_("CONFIGURAR O FRONTE END").c_str(), true, [this] { openUISettings(); }, "iconUI");
 		addEntry(controllers_settings_label.c_str(), true, [this] { openControllersSettings_batocera(); }, "iconControllers");
 		addEntry(_("CONFIGURAR AUDIO").c_str(), true, [this] { openSoundSettings(); }, "iconSound");
 
 		if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::WIFI)) {
-			addEntry(_("CONFIGURAR REDE").c_str(), true, [this] { openNetworkSettings_batocera(); }, "iconNetwork");
+			addEntry(_("CONFIGURE A REDE").c_str(), true, [this] { openNetworkSettings_batocera(); }, "iconNetwork");
 #if defined(AMD64) || defined(RK3326) || defined(RK3566) || defined(RK3566_X55) || defined(RK3588) || defined(RK3399)
 		  addEntry(_("MOONLIGHT GAME STREAMING").c_str(), true, [this] { GuiMoonlight::show(mWindow); }, "iconGames");
 #endif
@@ -179,8 +179,8 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 		else
 			addEntry(_("CONFIGURAR CONTROLES"), true, [this] { openConfigInput(); }, "iconControllers");
 
-		addEntry(_("CONFIGURAR AUDIO").c_str(), true, [this] { openSoundSettings(); }, "iconSound");
-		addEntry(_("CONFIGURAR MENU DE JOGOS").c_str(), true, [this] { openCollectionSystemSettings(); }, "iconAdvanced");
+		addEntry(_("CONFIGURAR O AUDIO").c_str(), true, [this] { openSoundSettings(); }, "iconSound");
+		addEntry(_("CONFIGURAR O MENU DE JOGOS").c_str(), true, [this] { openCollectionSystemSettings(); }, "iconAdvanced");
 
 		if (!ApiSystem::getInstance()->isScriptingSupported(ApiSystem::GAMESETTINGS))
 		{
@@ -189,7 +189,7 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 				if (system->isCollection() || system->getEmulators().size() == 0 || (system->getEmulators().size() == 1 && system->getEmulators().begin()->cores.size() <= 1))
 					continue;
 
-				addEntry(_("CONFIGURAR EMULADORES"), true, [this] { openEmulatorSettings(); }, "iconGames");
+				addEntry(_("CONFIGURE OS EMULADORES"), true, [this] { openEmulatorSettings(); }, "iconGames");
 				break;
 			}
 		}
@@ -209,7 +209,76 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 			addEntry(_("RETROACHIEVEMENTS").c_str(), true, [this] { GuiRetroAchievements::show(mWindow); }, "iconRetroachievements");
 
 		addEntry(_("DADOS DO SISTEMA LZ-OS").c_str(), true, [this] { openSystemInformations_batocera(); }, "iconSystem");
-		addEntry(_("UNLOCK UI MODE").c_str(), true, [this] { exitKidMode(); }, "iconAdvanced");
+		addEntry(_("AREA PARA ADIMINISTRADOR DO SISTEMA").c_str(), true, [this] { exitKidMode(); }, "iconAdvanced");
+		s->addEntry(_("MAPEAR CONTROLE"), false, [window, this, s]
+	{
+		window->pushGui(new GuiMsgBox(window,
+			_("PYOU ARE GOING TO MAP A CONTROLLER. MAP BASED ON THE BUTTON'S POSITION "
+				"RELATIVE TO ITS EQUIVALENT ON A SNES CONTROLLER, NOT ITS PHYSICAL LABEL. "
+				"IF YOU DO NOT HAVE A SPECIAL KEY FOR HOTKEY, USE THE SELECT BUTTON. SKIP "
+				"ALL BUTTONS/STICKS YOU DO NOT HAVE BY HOLDING ANY KEY. PRESS THE "
+				"SOUTH BUTTON TO CONFIRM WHEN DONE."), _("OK"),
+			[window, this, s] {
+			window->pushGui(new GuiDetectDevice(window, false, [this, s] {
+				s->setSave(false);
+				delete s;
+				this->openControllersSettings_batocera();
+			}));
+		}));
+	});
+
+	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::BLUETOOTH))
+	{
+		// BLUETOOTH TOGGLE
+		auto bluetoothd_enabled = std::make_shared<SwitchComponent>(mWindow);
+		bool btbaseEnabled = SystemConf::getInstance()->get("bluetooth.enabled") == "1";
+		bluetoothd_enabled->setState(btbaseEnabled);
+		s->addWithLabel(_("ENABLE BLUETOOTH"), bluetoothd_enabled);
+		bluetoothd_enabled->setOnChangedCallback([this, s, bluetoothd_enabled]() {
+			if (bluetoothd_enabled->getState() == false) {
+                                runSystemCommand("systemctl stop bluealsa", "", nullptr);
+                                runSystemCommand("systemctl stop bluetooth", "", nullptr);
+                                runSystemCommand("systemctl stop bluetoothsense", "", nullptr);
+                                runSystemCommand("systemctl stop bluetooth-agent", "", nullptr);
+                                runSystemCommand("rm /storage/.cache/services/bluez.conf", "", nullptr);
+                                runSystemCommand("rfkill block bluetooth", "", nullptr);
+			} else {
+                                runSystemCommand("mkdir -p /storage/.cache/services/", "", nullptr);
+                                runSystemCommand("touch /storage/.cache/services/bluez.conf", "", nullptr);
+                                runSystemCommand("systemctl start bluetooth", "", nullptr);
+                                runSystemCommand("systemctl start bluetooth-agent", "", nullptr);
+                                runSystemCommand("systemctl start bluetoothsense", "", nullptr);
+                                runSystemCommand("systemctl start bluealsa", "", nullptr);
+                                runSystemCommand("rfkill unblock bluetooth", "", nullptr);
+				mWindow->pushGui(new GuiLoading<bool>(mWindow, _("ENABLING BLUETOOTH"),
+					[this] {
+						// batocera-bluetooth-agent sleeps 2000 to ensure hardware is
+						// initialised, extra second gives it time to initialise itself.
+						std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+						return true;
+					},
+					[this](bool ret) {}));
+			}
+			bool bluetoothenabled = bluetoothd_enabled->getState();
+			SystemConf::getInstance()->set("bluetooth.enabled", bluetoothenabled ? "1" : "0");
+			SystemConf::getInstance()->saveSystemConf();
+		});
+
+		// PAIR A BLUETOOTH CONTROLLER OR BT AUDIO DEVICE
+		s->addEntry(_("PAIR A BLUETOOTH DEVICE"), false, [window, bluetoothd_enabled] {
+			if (bluetoothd_enabled->getState() == false) {
+				window->pushGui(new GuiMsgBox(window, _("BLUETOOTH IS DISABLED")));
+			} else {
+				ThreadedBluetooth::start(window);
+			}
+		});
+
+		// FORGET BLUETOOTH CONTROLLERS OR BT AUDIO DEVICES
+		s->addEntry(_("FORGET A BLUETOOTH DEVICE"), false, [window, this, s]
+		{
+			window->pushGui(new GuiBluetooth(window));
+		});
+	}
 	}
 
 #ifdef WIN32
@@ -254,7 +323,7 @@ void GuiMenu::openEmuELECSettings()
         auto bluetoothd_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool btbaseEnabled = SystemConf::getInstance()->get("bluetooth.enabled") == "1";
 		bluetoothd_enabled->setState(btbaseEnabled);
-		s->addWithLabel(_("ENABLE BLUETOOTH"), bluetoothd_enabled);
+		s->addWithLabel(_("LIGAR O BLUETOOTH"), bluetoothd_enabled);
 		s->addSaveFunc([bluetoothd_enabled] {
 			if (bluetoothd_enabled->changed()) {
 			if (bluetoothd_enabled->getState() == false) {
@@ -280,7 +349,7 @@ void GuiMenu::openEmuELECSettings()
        auto sshd_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool baseEnabled = SystemConf::getInstance()->get("ssh.enabled") == "1";
 		sshd_enabled->setState(baseEnabled);
-		s->addWithLabel(_("ENABLE SSH"), sshd_enabled);
+		s->addWithLabel(_("LIGAR O SSH"), sshd_enabled);
 		s->addSaveFunc([sshd_enabled] {
 			if (sshd_enabled->changed()) {
 			if (sshd_enabled->getState() == false) {
@@ -315,7 +384,7 @@ void GuiMenu::openEmuELECSettings()
        auto fps_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool fpsEnabled = SystemConf::getInstance()->get("global.showFPS") == "1";
 		fps_enabled->setState(fpsEnabled);
-		s->addWithLabel(_("SHOW RETROARCH FPS"), fps_enabled);
+		s->addWithLabel(_("MOSTRAR RETROARCH FPS"), fps_enabled);
 		s->addSaveFunc([fps_enabled] {
 			bool fpsenabled = fps_enabled->getState();
                 SystemConf::getInstance()->set("global.showFPS", fpsenabled ? "1" : "0");
@@ -335,7 +404,7 @@ void GuiMenu::openEmuELECSettings()
        auto splash_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool splashEnabled = SystemConf::getInstance()->get("splash.enabled") == "1";
 		splash_enabled->setState(splashEnabled);
-		s->addWithLabel(_("ENABLE RA SPLASH"), splash_enabled);
+		s->addWithLabel(_("LIGAR RA SPLASH"), splash_enabled);
 		s->addSaveFunc([splash_enabled] {
                 bool splashenabled = splash_enabled->getState();
                 SystemConf::getInstance()->set("splash.enabled", splashenabled ? "1" : "0");
@@ -345,7 +414,7 @@ void GuiMenu::openEmuELECSettings()
 	auto enable_bootvideo = std::make_shared<SwitchComponent>(mWindow);
 	bool bootEnabled = SystemConf::getInstance()->get("bootvideo.enabled") == "1";
 	enable_bootvideo->setState(bootEnabled);
-	s->addWithLabel(_("ALWAYS SHOW BOOT VIDEO"), enable_bootvideo);
+	s->addWithLabel(_("SEMPRE MOSTRAR VIDEO DE BOOT"), enable_bootvideo);
 
 	s->addSaveFunc([enable_bootvideo, window] {
 		bool bootvideoenabled = enable_bootvideo->getState();
