@@ -210,75 +210,7 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 
 		addEntry(_("DADOS DO SISTEMA LZ-OS").c_str(), true, [this] { openSystemInformations_batocera(); }, "iconSystem");
 		addEntry(_("AREA PARA ADIMINISTRADOR DO SISTEMA").c_str(), true, [this] { exitKidMode(); }, "iconAdvanced");
-		s->addEntry(_("MAPEAR CONTROLE"), false, [window, this, s]
-	{
-		window->pushGui(new GuiMsgBox(window,
-			_("PYOU ARE GOING TO MAP A CONTROLLER. MAP BASED ON THE BUTTON'S POSITION "
-				"RELATIVE TO ITS EQUIVALENT ON A SNES CONTROLLER, NOT ITS PHYSICAL LABEL. "
-				"IF YOU DO NOT HAVE A SPECIAL KEY FOR HOTKEY, USE THE SELECT BUTTON. SKIP "
-				"ALL BUTTONS/STICKS YOU DO NOT HAVE BY HOLDING ANY KEY. PRESS THE "
-				"SOUTH BUTTON TO CONFIRM WHEN DONE."), _("OK"),
-			[window, this, s] {
-			window->pushGui(new GuiDetectDevice(window, false, [this, s] {
-				s->setSave(false);
-				delete s;
-				this->openControllersSettings_batocera();
-			}));
-		}));
-	});
-
-	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::BLUETOOTH))
-	{
-		// BLUETOOTH TOGGLE
-		auto bluetoothd_enabled = std::make_shared<SwitchComponent>(mWindow);
-		bool btbaseEnabled = SystemConf::getInstance()->get("bluetooth.enabled") == "1";
-		bluetoothd_enabled->setState(btbaseEnabled);
-		s->addWithLabel(_("ENABLE BLUETOOTH"), bluetoothd_enabled);
-		bluetoothd_enabled->setOnChangedCallback([this, s, bluetoothd_enabled]() {
-			if (bluetoothd_enabled->getState() == false) {
-                                runSystemCommand("systemctl stop bluealsa", "", nullptr);
-                                runSystemCommand("systemctl stop bluetooth", "", nullptr);
-                                runSystemCommand("systemctl stop bluetoothsense", "", nullptr);
-                                runSystemCommand("systemctl stop bluetooth-agent", "", nullptr);
-                                runSystemCommand("rm /storage/.cache/services/bluez.conf", "", nullptr);
-                                runSystemCommand("rfkill block bluetooth", "", nullptr);
-			} else {
-                                runSystemCommand("mkdir -p /storage/.cache/services/", "", nullptr);
-                                runSystemCommand("touch /storage/.cache/services/bluez.conf", "", nullptr);
-                                runSystemCommand("systemctl start bluetooth", "", nullptr);
-                                runSystemCommand("systemctl start bluetooth-agent", "", nullptr);
-                                runSystemCommand("systemctl start bluetoothsense", "", nullptr);
-                                runSystemCommand("systemctl start bluealsa", "", nullptr);
-                                runSystemCommand("rfkill unblock bluetooth", "", nullptr);
-				mWindow->pushGui(new GuiLoading<bool>(mWindow, _("ENABLING BLUETOOTH"),
-					[this] {
-						// batocera-bluetooth-agent sleeps 2000 to ensure hardware is
-						// initialised, extra second gives it time to initialise itself.
-						std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-						return true;
-					},
-					[this](bool ret) {}));
-			}
-			bool bluetoothenabled = bluetoothd_enabled->getState();
-			SystemConf::getInstance()->set("bluetooth.enabled", bluetoothenabled ? "1" : "0");
-			SystemConf::getInstance()->saveSystemConf();
-		});
-
-		// PAIR A BLUETOOTH CONTROLLER OR BT AUDIO DEVICE
-		s->addEntry(_("PAIR A BLUETOOTH DEVICE"), false, [window, bluetoothd_enabled] {
-			if (bluetoothd_enabled->getState() == false) {
-				window->pushGui(new GuiMsgBox(window, _("BLUETOOTH IS DISABLED")));
-			} else {
-				ThreadedBluetooth::start(window);
-			}
-		});
-
-		// FORGET BLUETOOTH CONTROLLERS OR BT AUDIO DEVICES
-		s->addEntry(_("FORGET A BLUETOOTH DEVICE"), false, [window, this, s]
-		{
-			window->pushGui(new GuiBluetooth(window));
-		});
-	}
+		addEntry(_("CONFIGURAR CONTROLES"), true, [this] { openConfigInput(); }, "iconControllers");
 	}
 
 #ifdef WIN32
