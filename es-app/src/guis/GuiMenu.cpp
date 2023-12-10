@@ -1,4 +1,4 @@
-P#include "guis/GuiMenu.h"
+#include "guis/GuiMenu.h"
 
 #include "components/OptionListComponent.h"
 #include "components/SliderComponent.h"
@@ -111,7 +111,7 @@ std::string GetEnv( const std::string & var ) {
      }
 }
 
-GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(window, _("LZ-RETRO-STATION V-8.1").c_str()), mVersion(window)
+GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(window, _("MENU LZ-OS V7").c_str()), mVersion(window)
 {
 	// MAIN MENU
 	bool isFullUI = UIModeController::getInstance()->isUIModeFull();
@@ -145,8 +145,8 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 	if (isFullUI)
 	{
 #if !defined(WIN32) || defined(_DEBUG)
-		addEntry(_("CONFIGURE O LZ-OS").c_str(), true, [this] { openGamesSettings_batocera(); }, "iconGames");
-		addEntry(_("CONFIGURAR OS JOGOS").c_str(), true, [this] { openCollectionSystemSettings(); }, "iconAdvanced");
+		addEntry(_("CONFIGURAR SISTEMA LZ-OS").c_str(), true, [this] { openGamesSettings_batocera(); }, "iconGames");
+		addEntry(_("CONFIGURAR MENU DE JOGOS").c_str(), true, [this] { openCollectionSystemSettings(); }, "iconAdvanced");
 
 		if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::RETROACHIVEMENTS) &&
 			SystemConf::getInstance()->getBool("global.retroachievements") &&
@@ -155,15 +155,15 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 			addEntry(_("RETROACHIEVEMENTS").c_str(), true, [this] { GuiRetroAchievements::show(mWindow); }, "iconRetroachievements");
 
 #ifdef _ENABLEEMUELEC
-		addEntry(_("CONFIGURAR OS DADOS DO SISTEMA").c_str(), true, [this] { openSystemSettings_batocera(); }, "iconSystem");
+		addEntry(_("CONFIGURAR DADOS SISTEMA").c_str(), true, [this] { openSystemSettings_batocera(); }, "iconSystem");
 		//addEntry(_("EMULATIONSTATION SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec");
 #endif
-		addEntry(_("CONFIGURAR O FRONT END").c_str(), true, [this] { openUISettings(); }, "iconUI");
+		addEntry(_("CONFIGURAR UI").c_str(), true, [this] { openUISettings(); }, "iconUI");
 		addEntry(controllers_settings_label.c_str(), true, [this] { openControllersSettings_batocera(); }, "iconControllers");
 		addEntry(_("CONFIGURAR AUDIO").c_str(), true, [this] { openSoundSettings(); }, "iconSound");
 
 		if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::WIFI)) {
-			addEntry(_("CONFIGURE A REDE").c_str(), true, [this] { openNetworkSettings_batocera(); }, "iconNetwork");
+			addEntry(_("CONFIGURAR REDE").c_str(), true, [this] { openNetworkSettings_batocera(); }, "iconNetwork");
 #if defined(AMD64) || defined(RK3326) || defined(RK3566) || defined(RK3566_X55) || defined(RK3588) || defined(RK3399)
 		  addEntry(_("MOONLIGHT GAME STREAMING").c_str(), true, [this] { GuiMoonlight::show(mWindow); }, "iconGames");
 #endif
@@ -209,8 +209,7 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 			addEntry(_("RETROACHIEVEMENTS").c_str(), true, [this] { GuiRetroAchievements::show(mWindow); }, "iconRetroachievements");
 
 		addEntry(_("DADOS DO SISTEMA LZ-OS").c_str(), true, [this] { openSystemInformations_batocera(); }, "iconSystem");
-		addEntry(_("MENU PARA ADMINISTRADOR DO SISTEMA").c_str(), true, [this] { exitKidMode(); }, "iconAdvanced");
-		
+		addEntry(_("UNLOCK UI MODE").c_str(), true, [this] { exitKidMode(); }, "iconAdvanced");
 	}
 
 #ifdef WIN32
@@ -255,7 +254,7 @@ void GuiMenu::openEmuELECSettings()
         auto bluetoothd_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool btbaseEnabled = SystemConf::getInstance()->get("bluetooth.enabled") == "1";
 		bluetoothd_enabled->setState(btbaseEnabled);
-		s->addWithLabel(_("LIGAR BLUETOOTH"), bluetoothd_enabled);
+		s->addWithLabel(_("ENABLE BLUETOOTH"), bluetoothd_enabled);
 		s->addSaveFunc([bluetoothd_enabled] {
 			if (bluetoothd_enabled->changed()) {
 			if (bluetoothd_enabled->getState() == false) {
@@ -281,7 +280,7 @@ void GuiMenu::openEmuELECSettings()
        auto sshd_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool baseEnabled = SystemConf::getInstance()->get("ssh.enabled") == "1";
 		sshd_enabled->setState(baseEnabled);
-		s->addWithLabel(_("LIGAR SSH"), sshd_enabled);
+		s->addWithLabel(_("ENABLE SSH"), sshd_enabled);
 		s->addSaveFunc([sshd_enabled] {
 			if (sshd_enabled->changed()) {
 			if (sshd_enabled->getState() == false) {
@@ -316,7 +315,7 @@ void GuiMenu::openEmuELECSettings()
        auto fps_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool fpsEnabled = SystemConf::getInstance()->get("global.showFPS") == "1";
 		fps_enabled->setState(fpsEnabled);
-		s->addWithLabel(_("MOSTRAR RETROARCH FPS"), fps_enabled);
+		s->addWithLabel(_("SHOW RETROARCH FPS"), fps_enabled);
 		s->addSaveFunc([fps_enabled] {
 			bool fpsenabled = fps_enabled->getState();
                 SystemConf::getInstance()->set("global.showFPS", fpsenabled ? "1" : "0");
@@ -336,7 +335,7 @@ void GuiMenu::openEmuELECSettings()
        auto splash_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool splashEnabled = SystemConf::getInstance()->get("splash.enabled") == "1";
 		splash_enabled->setState(splashEnabled);
-		s->addWithLabel(_("LIGAR RA SPLASH"), splash_enabled);
+		s->addWithLabel(_("ENABLE RA SPLASH"), splash_enabled);
 		s->addSaveFunc([splash_enabled] {
                 bool splashenabled = splash_enabled->getState();
                 SystemConf::getInstance()->set("splash.enabled", splashenabled ? "1" : "0");
@@ -346,7 +345,7 @@ void GuiMenu::openEmuELECSettings()
 	auto enable_bootvideo = std::make_shared<SwitchComponent>(mWindow);
 	bool bootEnabled = SystemConf::getInstance()->get("bootvideo.enabled") == "1";
 	enable_bootvideo->setState(bootEnabled);
-	s->addWithLabel(_("SEMPRE MOSTRAR BOOT VIDEO"), enable_bootvideo);
+	s->addWithLabel(_("ALWAYS SHOW BOOT VIDEO"), enable_bootvideo);
 
 	s->addSaveFunc([enable_bootvideo, window] {
 		bool bootvideoenabled = enable_bootvideo->getState();
@@ -2866,11 +2865,11 @@ void GuiMenu::openControllersSettings_batocera(int autoSel)
 	s->addEntry(_("MAPEAR CONTROLE"), false, [window, this, s]
 	{
 		window->pushGui(new GuiMsgBox(window,
-			_("PARA MAPEAR UM CONTROLADOR. MAPA COM BASE NA LOCAL DO BOTAO"
-"RELACIONADO AO SEU EQUIVALENTE EM UM CONTROLADOR SNES, NAO À SUA ETIQUETA FISICA."
-"SE NÃO TIVER UMA TECLA ESPECIAL PARA HOTKEY, USE O BOTAO SELECIONAR. PULAR "
-"TODOS OS BOTÕES/PASTILHAS QUE NÃO TEM MANTENDO QUALQUER TECLA. PRESSIONE O"
-"BOTAO SUL PARA CONFIRMAR QUANDO CONCLUIDO."), _("OK"),
+			_("YOU ARE GOING TO MAP A CONTROLLER. MAP BASED ON THE BUTTON'S POSITION "
+				"RELATIVE TO ITS EQUIVALENT ON A SNES CONTROLLER, NOT ITS PHYSICAL LABEL. "
+				"IF YOU DO NOT HAVE A SPECIAL KEY FOR HOTKEY, USE THE SELECT BUTTON. SKIP "
+				"ALL BUTTONS/STICKS YOU DO NOT HAVE BY HOLDING ANY KEY. PRESS THE "
+				"SOUTH BUTTON TO CONFIRM WHEN DONE."), _("OK"),
 			[window, this, s] {
 			window->pushGui(new GuiDetectDevice(window, false, [this, s] {
 				s->setSave(false);
@@ -2918,7 +2917,7 @@ void GuiMenu::openControllersSettings_batocera(int autoSel)
 		});
 
 		// PAIR A BLUETOOTH CONTROLLER OR BT AUDIO DEVICE
-		s->addEntry(_("CONECTAR UM CONTROLE BLUETOOTH"), false, [window, bluetoothd_enabled] {
+		s->addEntry(_("PAIR A BLUETOOTH DEVICE"), false, [window, bluetoothd_enabled] {
 			if (bluetoothd_enabled->getState() == false) {
 				window->pushGui(new GuiMsgBox(window, _("BLUETOOTH IS DISABLED")));
 			} else {
@@ -4598,7 +4597,7 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 	}
 #endif
 
-	auto s = new GuiSettings(window, (quickAccessMenu ? _("SAIR E DESLIGAR LZ RETRO STATION") : _("SAIR")).c_str());
+	auto s = new GuiSettings(window, (quickAccessMenu ? _("SAIR E DESLIGAR") : _("SAIR")).c_str());
 	s->setCloseButton("select");
 
 	if (quickAccessMenu)
@@ -4611,7 +4610,7 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 			auto sname = AudioManager::getInstance()->getSongName();
 			if (!sname.empty())
 			{
-				s->addWithDescription(_("PULE PARA OUTRA MUSICA"), _("LISTAR AGORA") + " : " + sname, nullptr, [s, window]
+				s->addWithDescription(_("SKIP TO NEXT SONG"), _("LISTENING NOW") + " : " + sname, nullptr, [s, window]
 				{
 					Window* w = window;
 					AudioManager::getInstance()->playRandomMusic(false);
@@ -4657,8 +4656,8 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 		s->addGroup(_("SAIR"));
 
 #ifdef _ENABLEEMUELEC
-	s->addEntry(_("RESETAR LZ RETRO STATION"), false, [window] {
-		window->pushGui(new GuiMsgBox(window, _("POSSO RESETAR O LZ-RETRO-STATION?"), _("YES"),
+	s->addEntry(_("RESETAR EMULATIONSTATION"), false, [window] {
+		window->pushGui(new GuiMsgBox(window, _("REALLY RESTART EMULATIONSTATION?"), _("YES"),
 			[] {
     		   /*runSystemCommand("systemctl restart emustation.service", "", nullptr);*/
     		   Scripting::fireEvent("quit", "restart");
@@ -4692,15 +4691,15 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 
 #endif
 
-	s->addEntry(_("RESTART LZ RETRO STATION"), false, [window] {
-		window->pushGui(new GuiMsgBox(window, _("VAMOS RESETAR LZ-RETRO-STATION?"),
+	s->addEntry(_("RESTART LZ-OS"), false, [window] {
+		window->pushGui(new GuiMsgBox(window, _("REALLY RESTART?"),
 			_("YES"), [] { quitES(QuitMode::REBOOT); },
 			_("NO"), nullptr));
 	}, "iconRestart");
 
 
-	s->addEntry(_("DESLIGAR LZ RETRO STATION"), false, [window] {
-		window->pushGui(new GuiMsgBox(window, _("VAMOS DESLIGAR LZ-RETRO-STATION?"),
+	s->addEntry(_("DESLIGAR LZ-OS"), false, [window] {
+		window->pushGui(new GuiMsgBox(window, _("REALLY SHUTDOWN?"),
 			_("YES"), [] { quitES(QuitMode::SHUTDOWN); },
 			_("NO"), nullptr));
 	}, "iconShutdown");
@@ -4716,8 +4715,8 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 #ifdef WIN32
 	if (Settings::getInstance()->getBool("ShowExit"))
 	{
-		s->addEntry(_("SAIR LZ RETRO STATION"), false, [window] {
-			window->pushGui(new GuiMsgBox(window, _("VAMOS SAIR DO LZ-RETRO-STATION?"),
+		s->addEntry(_("SAIR EMULATIONSTATION"), false, [window] {
+			window->pushGui(new GuiMsgBox(window, _("REALLY QUIT?"),
 				_("YES"), [] { quitES(QuitMode::QUIT); },
 				_("NO"), nullptr));
 		}, "iconQuit");
