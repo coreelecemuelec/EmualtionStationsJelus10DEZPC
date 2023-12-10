@@ -111,7 +111,7 @@ std::string GetEnv( const std::string & var ) {
      }
 }
 
-GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(window, _("LZ-RETRO-STATION").c_str()), mVersion(window)
+GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(window, _("LZ-RETRO-STATION V-7.1").c_str()), mVersion(window)
 {
 	// MAIN MENU
 	bool isFullUI = UIModeController::getInstance()->isUIModeFull();
@@ -209,8 +209,8 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 			addEntry(_("RETROACHIEVEMENTS").c_str(), true, [this] { GuiRetroAchievements::show(mWindow); }, "iconRetroachievements");
 
 		addEntry(_("DADOS DO LZ-RETRO-STATION").c_str(), true, [this] { openSystemInformations_batocera(); }, "iconSystem");
-		addEntry(_("AREA PARA ADIMINISTRADOR DO SISTEMA").c_str(), true, [this] { exitKidMode(); }, "iconAdvanced");
 		addEntry(_("CONFIGURAR CONTROLES"), true, [this] { openConfigInput(); }, "iconControllers");
+		addEntry(_("AREA PARA ADIMINISTRADOR DO SISTEMA").c_str(), true, [this] { exitKidMode(); }, "iconAdvanced");
 
 	}
 
@@ -249,7 +249,7 @@ if (!isKidUI) {
 /* < emuelec */
 void GuiMenu::openEmuELECSettings()
 {
-	auto s = new GuiSettings(mWindow, "EmulationStation Settings");
+	auto s = new GuiSettings(mWindow, "LZ-RETRO-STATION SETTINGS");
 
 	Window* window = mWindow;
 	std::string a;
