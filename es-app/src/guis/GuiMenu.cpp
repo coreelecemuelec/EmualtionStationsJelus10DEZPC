@@ -156,7 +156,7 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 
 #ifdef _ENABLEEMUELEC
 		addEntry(_("CONFIGURE OS DADOS DE SISTEMA").c_str(), true, [this] { openSystemSettings_batocera(); }, "iconSystem");
-		addEntry(_("EMULATIONSTATION SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec");
+		addEntry(_("LZ-RETRO-STATION SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec");
 #endif
 		addEntry(_("CONFIGURAR O FRONTE END").c_str(), true, [this] { openUISettings(); }, "iconUI");
 		addEntry(controllers_settings_label.c_str(), true, [this] { openControllersSettings_batocera(); }, "iconControllers");
@@ -419,21 +419,21 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	GuiSettings* dangerZone = new GuiSettings(mWindow, _("DANGER ZONE").c_str());
 
     dangerZone->addEntry(_("BACKUP CONFIGURATIONS"), true, [mWindow] {
-    mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING THIS WILL RESTART EMULATIONSTATION!\n\nAFTER THE SCRIPT IS DONE REMEMBER TO COPY THE FILE /storage/roms/backup/JELOS_BACKUP.zip TO SOME PLACE SAFE OR IT WILL BE DELETED ON NEXT REBOOT!\n\nBACKUP CURRENT CONFIG AND RESTART?"), _("YES"),
+    mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING THIS WILL RESTART LZ-RETRO-STATION!\n\nAFTER THE SCRIPT IS DONE REMEMBER TO COPY THE FILE /storage/roms/backup/JELOS_BACKUP.zip TO SOME PLACE SAFE OR IT WILL BE DELETED ON NEXT REBOOT!\n\nBACKUP CURRENT CONFIG AND RESTART?"), _("YES"),
 				[] {
 				runSystemCommand("/usr/bin/run \"/usr/bin/backuptool backup\"", "", nullptr);
 				}, _("NO"), nullptr));
      });
 
     dangerZone->addEntry(_("RESTORE FROM BACKUP"), true, [mWindow] {
-    mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING THIS WILL RESTART EMULATIONSTATION AND REBOOT!\n\nYOUR EXISTING CONFIGURATION WILL BE OVERWRITTEN!\n\nRESTORE FROM BACKUP AND RESTART?"), _("YES"),
+    mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING THIS WILL RESTART LZ-RETRO-STATION AND REBOOT!\n\nYOUR EXISTING CONFIGURATION WILL BE OVERWRITTEN!\n\nRESTORE FROM BACKUP AND RESTART?"), _("YES"),
 				[] {
 				runSystemCommand("/usr/bin/run \"/usr/bin/backuptool restore\"", "", nullptr);
 				}, _("NO"), nullptr));
      });
 
     dangerZone->addEntry(_("SPLIT ROM SYSTEMS"), true, [mWindow] {
-    mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING THIS WILL RESTART EMULATIONSTATION!\n\nTHIS SCRIPT WILL LOOK FOR SYSTEMS IN '/STORAGE/ROMS_LOCAL' AND '/STORAGE/ROMS' AND UPDATE EMULATIONSTATION ROM LOCATIONS\n\nSPLIT SYSTEM FOLDERS AND RESTART?"), _("YES"),
+    mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING THIS WILL RESTART LZ-RETRO-STATION!\n\nTHIS SCRIPT WILL LOOK FOR SYSTEMS IN '/STORAGE/ROMS_LOCAL' AND '/STORAGE/ROMS' AND UPDATE LZ-RETRO-STATION ROM LOCATIONS\n\nSPLIT SYSTEM FOLDERS AND RESTART?"), _("YES"),
 				[] {
 				runSystemCommand("/usr/bin/run \"/usr/bin/rom_system_split\"", "", nullptr);
 				}, _("NO"), nullptr));
@@ -3879,7 +3879,7 @@ void GuiMenu::openUISettings()
 
         auto invertJoy = std::make_shared<SwitchComponent>(mWindow);
         invertJoy->setState(Settings::getInstance()->getBool("InvertButtons"));
-        s->addWithLabel(_("TROCAR BOTAO A & B NO EMULATIONSTATION"), invertJoy);
+        s->addWithLabel(_("TROCAR BOTAO A & B NO LZ-RETRO-STATION"), invertJoy);
         s->addSaveFunc([this, s, invertJoy]
         {
                 if (Settings::getInstance()->setBool("InvertButtons", invertJoy->getState()))
@@ -4658,8 +4658,8 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 		s->addGroup(_("SAIR"));
 
 #ifdef _ENABLEEMUELEC
-	s->addEntry(_("RESETAR EMULATIONSTATION"), false, [window] {
-		window->pushGui(new GuiMsgBox(window, _("REALLY RESTART EMULATIONSTATION?"), _("YES"),
+	s->addEntry(_("RESETAR LZ-RETRO-STATION"), false, [window] {
+		window->pushGui(new GuiMsgBox(window, _("REALLY RESTART LZ-RETRO-STATION?"), _("YES"),
 			[] {
     		   /*runSystemCommand("systemctl restart emustation.service", "", nullptr);*/
     		   Scripting::fireEvent("quit", "restart");
@@ -4717,7 +4717,7 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 #ifdef WIN32
 	if (Settings::getInstance()->getBool("ShowExit"))
 	{
-		s->addEntry(_("SAIR EMULATIONSTATION"), false, [window] {
+		s->addEntry(_("SAIR LZ-RETRO-STATION"), false, [window] {
 			window->pushGui(new GuiMsgBox(window, _("REALLY QUIT?"),
 				_("YES"), [] { quitES(QuitMode::QUIT); },
 				_("NO"), nullptr));
