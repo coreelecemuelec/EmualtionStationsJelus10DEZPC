@@ -156,7 +156,7 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 
 #ifdef _ENABLEEMUELEC
 		addEntry(_("CONFIGURE OS DADOS DE SISTEMA").c_str(), true, [this] { openSystemSettings_batocera(); }, "iconSystem");
-		//addEntry(_("EMULATIONSTATION SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec");
+		addEntry(_("EMULATIONSTATION SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec");
 #endif
 		addEntry(_("CONFIGURAR O FRONTE END").c_str(), true, [this] { openUISettings(); }, "iconUI");
 		addEntry(controllers_settings_label.c_str(), true, [this] { openControllersSettings_batocera(); }, "iconControllers");
